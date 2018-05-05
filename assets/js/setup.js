@@ -1,6 +1,6 @@
 'use strict'
 
-const Node = require('./node.js').Node;
+const Node     = require('./node.js');
 const nodeData = require('../node_data.json');
 const Player = require('./player.js').Player;
 

@@ -17,11 +17,11 @@
 
     // create a network
     var graph = document.getElementById('graph');
-    var graphData = {
-        nodes: nodes,
-        edges: edges
-    };
+    var graphData = {};
     var options = {
+        'autoResize': true,
+        'height': '600px',
+        'width': '600px',
         'interaction': {
             // dragNodes: false
         },
@@ -43,11 +43,15 @@
             'width': 2
         }
     };
-    network = new vis.Network(graph, graphData, options);
+    var network;
+    
 
     function refreshState(){
-        socket.emit('request',{
-            'type': 'refresh'
-        })
+        socket.emit('request',{ 'type':'refresh' })
     }
+    socket.on('setup', function(data) {
+        graphData.nodes = graphNodes
+        graphData.edges = graphEdges
+        network = new vis.Network(graph, graphData, options);
+    })
 </script>
