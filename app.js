@@ -3,7 +3,7 @@
 var express = require('express');
 var app     = express();
 var config  = require('./config.json');
-var port    = config.port;
+var port    = config.port | 3000;
 
 app.use('/', express.static(__dirname + '/assets'))
 
