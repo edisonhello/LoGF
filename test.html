@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+    <head>
+        <title>LoGF</title>
+        <link rel="stylesheet" type="text/css" href="/css/vis-network.min.css">
+        <link rel="stylesheet" type="text/css" href="/css/main.css">
+        <link rel="stylesheet" type="text/css" href="/css/custom.css">
+    </head>
+    <body><div id="graph"></div></body>
+</html>
+
+<script type="text/javascript" src="/js/vis.js"></script>
+<script type="text/javascript" src="../socket.io/socket.io.js"></script>
+<script type="text/javascript">
+
+    var socket = io.connect();
+
+    // create a network
+    var graph = document.getElementById('graph');
+    var graphData = {
+        nodes: nodes,
+        edges: edges
+    };
+    var options = {
+        'interaction': {
+            // dragNodes: false
+        },
+        'nodes': {
+            'shape': 'dot',
+            'size': 30,
+            'font': {
+                'size': 32,
+                'color': '#ffffff'
+            },
+            'borderWidth': 2,
+            'chosen': {
+                'node': function(values, id, selected, hovering) {
+                    
+                }
+            }
+        },
+        'edges': {
+            'width': 2
+        }
+    };
+    network = new vis.Network(graph, graphData, options);
+
+    function refreshState(){
+        socket.emit('request',{
+            'type': 'refresh'
+        })
+    }
+</script>

@@ -2,6 +2,7 @@
 
 const Node     = require('./node.js').Node;
 const nodeData = require('../node_data.json');
+var allnode, nodes, graphEdges, graphNodes;
 
 function setupNodes() {
     let allnode = {};
@@ -45,9 +46,14 @@ function getGraph(nodes) {
     return [gNodes, gEdges];
 }
 
-function setup() {
-    let [allnode, nodes] = setupNodes();
-    let [graphNodes, graphEdges] = getGraph(nodes);
-}
+(function setup() {
+    [allnode, nodes] = setupNodes();
+    [graphNodes, graphEdges] = getGraph(nodes);
+})()
 
-module.exports = setup;
+module.exports = {
+    allnode,
+    nodes,
+    graphEdges,
+    graphNodes
+}
