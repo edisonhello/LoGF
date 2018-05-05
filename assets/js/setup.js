@@ -2,7 +2,7 @@
 
 const Node     = require('./node.js');
 const nodeData = require('../node_data.json');
-var allnode, nodes, graphEdges, graphNodes;
+const Player = require('./player.js').Player;
 
 function setupNodes() {
     let allnode = {};
@@ -46,14 +46,33 @@ function getGraph(nodes) {
     return [gNodes, gEdges];
 }
 
-(function setup() {
-    [allnode, nodes] = setupNodes();
-    [graphNodes, graphEdges] = getGraph(nodes);
-})()
-
-module.exports = {
-    allnode,
-    nodes,
-    graphEdges,
-    graphNodes
+function getPlayer(playerName) {
+    let players = [];
+    for(let i in playerName) {
+        let initLocation;
+        if(i === 0) initLocation = 'p04';
+        if(i === 1) initLocation = 'p07';
+        if(i === 2) initLocation = 'p17';
+        if(i === 3) initLocation = 'p21';
+        players.push(new Player(playerName[i], initLocation));
+    }
+    return players;
 }
+
+function setup(playerName) {
+    let [allnode, nodes] = setupNodes();
+    let [graphNodes, graphEdges] = getGraph(nodes);
+    let players = getPlayer(playerName);
+    return {
+        'game': {
+            'turn': 3,
+            'phase': 'collect',
+            'players': players,
+            'map': nodes
+        },
+        graphNodes: graphNodes,
+        graphEdges: graphEdges
+    }
+}
+
+module.exports = setup;
