@@ -3,8 +3,9 @@
 module.exports = function(name, location) {
 
     // player data
-    this.playerName = name;
+    this.playerName  = name;
     this.location    = location;
+    this.spawnPoint  = location;
     
     // status initialize
     this.hp          = 20;
@@ -23,7 +24,6 @@ module.exports = function(name, location) {
     this.diamond     = 0;
 
     // play harvest action allowed
-    this.canHarvestStone = false
-    this.canHarvestDiamond = false
-
+    this.canHarvestStone = false;
+    this.canHarvestDiamond = false;
 }

@@ -3,12 +3,13 @@
 var express = require('express');
 var app     = express();
 var server  = require('http').Server(app)
+var http    = require('http')
 var io      = require('socket.io')(server)
 var handler = require('./assets/js/handle.js')
 var config  = require('./config.json');
 var port    = config.port || 3000;
 
-app.use('/', express.static(__dirname + '/assets'))
+app.use('/assets', express.static(__dirname + '/assets'))
 
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html', function() {
