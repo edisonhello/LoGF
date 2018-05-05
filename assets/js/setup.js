@@ -63,15 +63,17 @@ function setup(playerName) {
     let [allnode, nodes] = setupNodes();
     let [graphNodes, graphEdges] = getGraph(nodes);
     let players = getPlayer(playerName);
+    let startPlayer = 0;
+    while(players[startPlayer].playerName === '') ++startPlayer;
     return {
         'game': {
-            'turn': 3,
+            'turn': startPlayer,
             'phase': 'collect',
             'players': players,
             'map': nodes
-        },
-        graphNodes: graphNodes,
-        graphEdges: graphEdges
+        }
+        'graphNodes': graphNodes,
+        'graphEdges': graphEdges
     }
 }
 
