@@ -1,4 +1,6 @@
 node_modules/
 config.json
+*.swp
 ./*.swp
+test.js
 ./test.js

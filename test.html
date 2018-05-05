@@ -20,8 +20,8 @@
     var graphData = {};
     var options = {
         'autoResize': true,
-        'height': '600px',
-        'width': '600px',
+        'height': '100%',
+        'width': '100%',
         'interaction': {
             // dragNodes: false
         },
@@ -41,6 +41,9 @@
         },
         'edges': {
             'width': 2
+        },
+        'physics': {
+            'enabled': false
         }
     };
     var network;
