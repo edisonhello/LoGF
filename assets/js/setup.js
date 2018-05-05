@@ -2,6 +2,7 @@
 
 const Node     = require('./node.js');
 const nodeData = require('../node_data.json');
+const nodePosition = require('../node_position.json');
 const Player = require('./player.js');
 
 function setupNodes() {
@@ -35,7 +36,12 @@ function getGraph(nodes) {
     let gNodes = [], gEdges = [];
     for(let category in nodes) {
         for(let nodeKey in nodes[category]) {
-            gNodes.push({ 'id':nodeKey, 'label':nodeKey, 'group':category });
+            let nNode = { 'id':nodeKey, 'label':nodeKey, 'group':category };
+            if(nodePosition[nodeKey] !== undefined) {
+                nNode.x = nodePosition[nodeKey].x;
+                nNode.y = nodePosition[nodeKey].y;
+            }
+            gNodes.push(nNode);
             for(let idx in nodes[category][nodeKey]['neighbors']) {
                 let to = nodes[category][nodeKey]['neighbors'][idx];
                 if(to < nodeKey) continue;
@@ -43,6 +49,7 @@ function getGraph(nodes) {
             }
         }
     }
+    console.log(gNodes);
     return [gNodes, gEdges];
 }
 
@@ -66,8 +73,6 @@ function setup(playerName) {
     let players = getPlayer(playerName);
     let startPlayer = 0;
     while(players[startPlayer].playerName === '') ++startPlayer;
-    // console.log(startPlayer)
-    console.log('ok1')
     return {
         'game': {
             'turn': startPlayer,
