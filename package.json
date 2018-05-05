@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/edisonhello/LoGF/issues"
   },
-  "homepage": "https://github.com/edisonhello/LoGF#readme"
+  "homepage": "https://github.com/edisonhello/LoGF#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
 }
