@@ -3,7 +3,7 @@
 const Node     = require('./node.js').Node;
 const nodeData = require('../node_data.json');
 
-function setup() {
+function setupNodes() {
     let allnode = {};
     let nodes = {
         'resource': {},
@@ -27,6 +27,27 @@ function setup() {
             allnode[key].neighbors[i] = allnode[nodeData[key][i]];
         }
     }
+    return [allnode, nodes];
+}
+
+function getGraph(nodes) {
+    let gNodes = [], gEdges = [];
+    for(let category in nodes) {
+        for(let nodeKey in nodes[category]) {
+            gNodes.push({ 'id':nodeKey, 'label':nodeKey, 'group':category });
+            for(let idx in nodes[category][nodeKey]['neighbors']) {
+                let to = nodes[category][nodeKey]['neighbors'][idx].id;
+                if(to < nodeKey) continue;
+                gEdges.push({ 'from':nodeKey, 'to':to });
+            }
+        }
+    }
+    return [gNodes, gEdges];
+}
+
+function setup() {
+    let [allnode, nodes] = setupNodes();
+    let [graphNodes, graphEdges] = getGraph(nodes);
 }
 
 module.exports = setup;
