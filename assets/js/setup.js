@@ -71,7 +71,7 @@ function setup(playerName) {
             'phase': 'collect',
             'players': players,
             'map': nodes
-        }
+        },
         'graphNodes': graphNodes,
         'graphEdges': graphEdges
     }
