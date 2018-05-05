@@ -29,8 +29,6 @@
 
 <div id="mynetwork"></div>
 <script type="text/javascript">
-    // var color = 'gray';
-    // var len = undefined;
 
     var nodes = [{id: 0, label: "0", group: 0},
         {id: 1, label: "1", group: 0},
@@ -102,7 +100,7 @@
     };
     var options = {
         interaction: {
-            dragNodes: false
+            // dragNodes: false
         },
         nodes: {
             shape: 'dot',
@@ -114,10 +112,7 @@
             borderWidth: 2,
             chosen: {
                 node: function(values, id, selected, hovering) {
-                    console.log(values)
-                    console.log(id)
-                    console.log(selected)
-                    console.log(hovering)
+                
                 }
             }
         },
