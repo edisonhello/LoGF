@@ -5,7 +5,7 @@ var app     = express();
 var config  = require('./config.json');
 var port    = config.port;
 
-app.use('/', express.static(__dirname + '/assest'))
+app.use('/', express.static(__dirname + '/assets'))
 
 app.get('/', function(req,res) {
     res.sendFile(__dirname + '/index.html', function() {
