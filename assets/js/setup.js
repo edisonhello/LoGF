@@ -2,7 +2,7 @@
 
 const Node     = require('./node.js');
 const nodeData = require('../node_data.json');
-const Player = require('./player.js').Player;
+const Player = require('./player.js');
 
 function setupNodes() {
     let allnode = {};
@@ -25,7 +25,7 @@ function setupNodes() {
     }
     for(let key in nodeData) {
         for(let i in nodeData[key]) {
-            allnode[key].neighbors[i] = allnode[nodeData[key][i]];
+            allnode[key].neighbors[i] = nodeData[key][i];
         }
     }
     return [allnode, nodes];
@@ -37,7 +37,7 @@ function getGraph(nodes) {
         for(let nodeKey in nodes[category]) {
             gNodes.push({ 'id':nodeKey, 'label':nodeKey, 'group':category });
             for(let idx in nodes[category][nodeKey]['neighbors']) {
-                let to = nodes[category][nodeKey]['neighbors'][idx].id;
+                let to = nodes[category][nodeKey]['neighbors'][idx];
                 if(to < nodeKey) continue;
                 gEdges.push({ 'from':nodeKey, 'to':to });
             }
@@ -55,6 +55,7 @@ function getPlayer(playerName) {
         if(i === 2) initLocation = 'p17';
         if(i === 3) initLocation = 'p21';
         players.push(new Player(playerName[i], initLocation));
+        // console.log(players)
     }
     return players;
 }
@@ -65,13 +66,15 @@ function setup(playerName) {
     let players = getPlayer(playerName);
     let startPlayer = 0;
     while(players[startPlayer].playerName === '') ++startPlayer;
+    // console.log(startPlayer)
+    console.log('ok1')
     return {
         'game': {
             'turn': startPlayer,
             'phase': 'collect',
             'players': players,
             'map': nodes
-        }
+        },
         'graphNodes': graphNodes,
         'graphEdges': graphEdges
     }

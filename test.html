@@ -10,7 +10,7 @@
 </html>
 
 <script type="text/javascript" src="/assets/lib/vis.js"></script>
-<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="http://localhost:9005/socket.io/socket.io.js"></script>
 <script type="text/javascript">
 
     var socket = io.connect();
@@ -49,9 +49,11 @@
     function refreshState(){
         socket.emit('request',{ 'type':'refresh' })
     }
-    socket.on('setup', function(data) {
-        graphData.nodes = graphNodes
-        graphData.edges = graphEdges
+    socket.on('response', function(data) {
+        console.log(data.game)
+        graphData.nodes = data.game.graphNodes
+        graphData.edges = data.game.graphEdges
         network = new vis.Network(graph, graphData, options);
     })
+    socket.emit('start', {'type': 'start', name: ["meow","meow","",""]})    
 </script>

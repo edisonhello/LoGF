@@ -3,7 +3,7 @@ body {
     font: 12pt arial;
     background-color: #222222;
 }
-#mynetwork {
+#graph {
     width: 800px;
     height: 800px;
     border: 1px solid #444444;

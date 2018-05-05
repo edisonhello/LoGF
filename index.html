@@ -2,15 +2,15 @@
 <html>
     <head>
         <title>LoGF</title>
-        <link rel="stylesheet" type="text/css" href="/css/vis-network.min.css">
-        <link rel="stylesheet" type="text/css" href="/css/main.css">
-        <link rel="stylesheet" type="text/css" href="/css/custom.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/vis-network.min.css">
+        <!-- <link rel="stylesheet" type="text/css" href="/assets/css/main.css"> -->
+        <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
     </head>
     <body><div id="graph"></div></body>
 </html>
 
-<script type="text/javascript" src="/js/vis.js"></script>
-<script type="text/javascript" src="../socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/assets/lib/vis.js"></script>
+<!-- <script type="text/javascript" src="/socket.io/socket.io.js"></script> -->
 <script type="text/javascript">
 
     var nodes = [
@@ -85,6 +85,9 @@
     var options = {
         'interaction': {
             // dragNodes: false
+        },
+        physics:{
+            enabled: false,
         },
         'nodes': {
             'shape': 'dot',
