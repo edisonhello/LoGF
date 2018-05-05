@@ -4,19 +4,19 @@ var express = require('express');
 var app     = express();
 var server  = require('http').Server(app)
 var io      = require('socket.io')(server)
-var handleReq = require('./assets/js/handle.js')
+var handler = require('./assets/js/handle.js')
 var config  = require('./config.json');
 var port    = config.port || 3000;
 
 app.use('/', express.static(__dirname + '/assets'))
 
-app.get('/', function(req,res) {
+app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html', function() {
         res.end();
     });
 });
 
-app.get('/test', function(req,res) {
+app.get('/test', function(req, res) {
     res.sendFile(__dirname + '/test.html', function() {
         res.end();
     });
@@ -27,7 +27,12 @@ app.listen(port, function () {
 });
 
 io.sockets.on('connection', function(socket){
+    let game;
+    socket.on('start', function(data){
+        game = handler(data, null, socket)
+    })
     socket.on('request', function(data){
-        handleReq(data, socket)
+        if (!game) return
+        handler(data, game, socket)
     });
 });
