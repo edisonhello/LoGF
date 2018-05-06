@@ -18,13 +18,13 @@ var adapter = {
         }
         if(isPlayerName === false || !(countPlayer >= 2 && countPlayer <= 4)) {
             socket.emit('response', {
-                'type': 'setup',
+                'type': 'start'
             });
             return undefined;
         }
         let information = setup(data.name);
         socket.emit('response', {
-            'type': 'setup',
+            'type': 'start',
             'game': information
         });
         return information.game;

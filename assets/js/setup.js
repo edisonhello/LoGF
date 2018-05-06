@@ -49,7 +49,6 @@ function getGraph(nodes) {
             }
         }
     }
-    console.log(gNodes);
     return [gNodes, gEdges];
 }
 
@@ -57,10 +56,10 @@ function getPlayer(playerName) {
     let players = [];
     for(let i in playerName) {
         let initLocation;
-        if(i === 0) initLocation = 'p04';
-        if(i === 1) initLocation = 'p07';
-        if(i === 2) initLocation = 'p17';
-        if(i === 3) initLocation = 'p21';
+        if(i === '0') initLocation = 'p04';
+        if(i === '1') initLocation = 'p07';
+        if(i === '2') initLocation = 'p17';
+        if(i === '3') initLocation = 'p21';
         players.push(new Player(playerName[i], initLocation));
         // console.log(players)
     }
@@ -78,7 +77,8 @@ function setup(playerName) {
             'turn': startPlayer,
             'phase': 'collect',
             'players': players,
-            'map': nodes
+            'map': nodes,
+            'allnode': allnode
         },
         'graphNodes': graphNodes,
         'graphEdges': graphEdges

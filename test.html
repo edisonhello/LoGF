@@ -7,18 +7,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
     </head>
     <body>
-        <div id="graph"></div>
-        <div id="infor">
-            <div id="func">
-                <div id="nameForm" style="display: none">
-                    <input placeholder=" Start from f04"></input>
-                    <input placeholder=" Start from f07"></input>
-                    <input placeholder=" Start from f17"></input>
-                    <input placeholder=" Start from f21"></input>
-                    <button onClick="submitName()">Send</button>
-                </div>
+        <div id="graph">
+            <div id="nameForm">
+                <h1>Please enter your name</h1>
+                <input placeholder=" Start from p04"></input>
+                <input placeholder=" Start from p07"></input><br>
+                <input placeholder=" Start from p17"></input>
+                <input placeholder=" Start from p21"></input><br>
+                <button onClick="submitName()">Send</button>
             </div>
         </div>
+        <div id="infor">
+            <h1>Game Log</h1>
+            <div id="gameLog"></div>
+            <h1>Node Info</h1>
+            <div id="nodeInfo"></div>
+        </div>
+        
     </body>
 </html>
 
@@ -32,65 +37,104 @@
     // create a network
     var graph = document.getElementById('graph');
     var infor = document.getElementById('infor');
-    var func = $('#func')
+    var gameLog = document.getElementById('gameLog');
+    var nodeInfo = document.getElementById('nodeInfo');
     var graphData = {};
-    var options = {
-        'autoResize': true,
-        'height': '100%',
-        'width': '100%',
-        'interaction': {
-            // dragNodes: false
-        },
-        'nodes': {
+    var options   = {
+        // 'autoResize'  : true,
+        'height'      : 'calc(100% - 2px)',
+        'width'       : 'calc(100% - 1wpx)',
+        'interaction' : { 'dragNodes':false },
+        'edges'       : { 'width':2 },
+        'physics'     : { 'enabled':false },
+        'nodes'       : {
             'shape': 'dot',
-            'size': 30,
-            'font': {
-                'size': 32,
+            'size' : 30,
+            'font' : {
+                'size' : 32,
                 'color': '#ffffff'
             },
             'borderWidth': 2,
-            'chosen': {
-                'node': function(values, id, selected, hovering) {
-                    console.log(values)
-                    values.size += 20;
-                }
-            }
-        },
-        'edges': {
-            'width': 2
-        },
-        'physics': {
-            'enabled': false
+            'chosen': { 'node':nodesOnClick  }
         }
     };
-    var network;
+    var network, game;
+
+    var tmpMem = {};
+
+    function nodesOnClick(values, id, selected, hovering) {
+        values.size += 20;
+        tmpMem[id] = values
+        console.log(tmpMem)
+        nodeInfo.innerHTML = JSON.stringify(values, null, 4).replace(/\n/g, "<br>").replace(/\"/g,'\'').replace(/ /g, '&nbsp;');
+        console.log
+    }
+
+    function showMessage(msg) {
+        let time = new Date()
+        gameLog.innerHTML = (`<text>${time.toLocaleTimeString()} | ${msg}</text><br>` + gameLog.innerHTML);
+    }
 
     function submitName() {
+
+        // Get value
+        var inputs = $('#nameForm > input')
         var names = [
-            $('input')[0].value,
-            $('input')[1].value,
-            $('input')[2].value,
-            $('input')[3].value
+            inputs[0].value,
+            inputs[1].value,
+            inputs[2].value,
+            inputs[3].value
         ]
+
+        // Check if available
+        let playerCount = 0;
+        for(let i in names) if(names[i] !== '') playerCount++;
+        if(!(playerCount >= 2 && playerCount <= 4)) {
+            showMessage("玩家人數必須介於2~4之間");
+            return;
+        }
         socket.emit('start', {
             'type': 'start',
             'name': names
         })
     }
 
-    function askForName() {
-        $('#nameForm').show()
-    }
-    // askForName()
-
-    function refreshState(){
-        socket.emit('request',{ 'type':'refresh' })
-    }
     socket.on('response', function(data) {
-        console.log(data.game)
-        graphData.nodes = data.game.graphNodes
-        graphData.edges = data.game.graphEdges
-        network = new vis.Network(graph, graphData, options);
+        console.log(data);
+        if(data.type === undefined) return;
+        adapter[data.type](data);
     })
-    socket.emit('start', {'type': 'start', name: ["meow","meow","",""]})    
+
+    var adapter = {
+        'start': function(data) {
+
+            // Get game status
+            game = data.game.game;
+
+            // Draw graph
+            graphData.nodes = new vis.DataSet(data.game.graphNodes);
+            graphData.edges = new vis.DataSet(data.game.graphEdges);
+            network = new vis.Network(graph, graphData, options);
+
+            // Zoom in
+            network.once("beforeDrawing", function() {
+                network.focus('f08', { scale: 2 });
+            });
+            network.once("afterDrawing", function() {
+                network.fit({
+                    animation: {
+                        duration: 3000,
+                        easingFunction: 'linear'
+                    }
+                });
+            });
+
+            // Change interface
+            showMessage('遊戲開始!!')
+            $('#nameForm').hide();
+        }
+    }
+    // this.selectionHandler.selectNodes.apply(this.selectionHandler, arguments)
+    // network.selectionHandler.selectNodes.apply(network.selectionHandler, [['b02']])
+
 </script>
