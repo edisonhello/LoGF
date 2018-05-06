@@ -38,8 +38,8 @@ function getGraph(nodes) {
         for(let nodeKey in nodes[category]) {
             let nNode = { 'id':nodeKey, 'label':nodeKey, 'group':category };
             if(nodePosition[nodeKey] !== undefined) {
-                nNode.x = nodePosition[nodeKey].x;
-                nNode.y = nodePosition[nodeKey].y;
+                nNode.x = nodePosition[nodeKey].x * 100;
+                nNode.y = nodePosition[nodeKey].y * 100;
             }
             gNodes.push(nNode);
             for(let idx in nodes[category][nodeKey]['neighbors']) {
