@@ -3,20 +3,36 @@
     <head>
         <title>LoGF</title>
         <link rel="stylesheet" type="text/css" href="/assets/css/vis-network.min.css">
-        <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
+        <!-- <link rel="stylesheet" type="text/css" href="/assets/css/main.css"> -->
         <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
     </head>
-    <body><div id="graph"></div></body>
+    <body>
+        <div id="graph"></div>
+        <div id="infor">
+            <div id="func">
+                <div id="nameForm" style="display: none">
+                    <input placeholder=" Start from f04"></input>
+                    <input placeholder=" Start from f07"></input>
+                    <input placeholder=" Start from f17"></input>
+                    <input placeholder=" Start from f21"></input>
+                    <button onClick="submitName()">Send</button>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
 
 <script type="text/javascript" src="/assets/lib/vis.js"></script>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type="text/javascript">
 
     var socket = io.connect();
 
     // create a network
     var graph = document.getElementById('graph');
+    var infor = document.getElementById('infor');
+    var func = $('#func')
     var graphData = {};
     var options = {
         'autoResize': true,
@@ -35,7 +51,8 @@
             'borderWidth': 2,
             'chosen': {
                 'node': function(values, id, selected, hovering) {
-                    
+                    console.log(values)
+                    values.size += 20;
                 }
             }
         },
@@ -47,7 +64,24 @@
         }
     };
     var network;
-    
+
+    function submitName() {
+        var names = [
+            $('input')[0].value,
+            $('input')[1].value,
+            $('input')[2].value,
+            $('input')[3].value
+        ]
+        socket.emit('start', {
+            'type': 'start',
+            'name': names
+        })
+    }
+
+    function askForName() {
+        $('#nameForm').show()
+    }
+    // askForName()
 
     function refreshState(){
         socket.emit('request',{ 'type':'refresh' })
