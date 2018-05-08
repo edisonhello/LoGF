@@ -60,18 +60,15 @@
     };
     var network, game;
 
-    var tmpMem = {};
-
     function nodesOnClick(values, id, selected, hovering) {
         values.size += 20;
-        tmpMem[id] = values
-        console.log(tmpMem)
+        values.id  = id;
+        values.color = '#ffffff'
         nodeInfo.innerHTML = JSON.stringify(values, null, 4).replace(/\n/g, "<br>").replace(/\"/g,'\'').replace(/ /g, '&nbsp;');
-        console.log
     }
 
     function showMessage(msg) {
-        let time = new Date()
+        let time = new Date();
         gameLog.innerHTML = (`<text>${time.toLocaleTimeString()} | ${msg}</text><br>` + gameLog.innerHTML);
     }
 
