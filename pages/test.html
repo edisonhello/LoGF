@@ -3,7 +3,6 @@
     <head>
         <title>LoGF</title>
         <link rel="stylesheet" type="text/css" href="/assets/css/vis-network.min.css">
-        <!-- <link rel="stylesheet" type="text/css" href="/assets/css/main.css"> -->
         <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
     </head>
     <body>
@@ -17,11 +16,18 @@
                 <button onClick="submitName()">Send</button>
             </div>
         </div>
-        <div id="infor">
+        <div id="info">
             <h1>Game Log</h1>
             <div id="gameLog"></div>
             <h1>Node Info</h1>
             <div id="nodeInfo"></div>
+            <h1>Options</h1>
+            <div id="gameOptions">
+                <button onClick="showMessage('功能開發中')">Move</button>
+                <button onClick="showMessage('功能開發中')">Skip</button>
+                <button onClick="showMessage('功能開發中')">Eat</button>
+                <button onClick="showMessage('功能開發中')">Collect</button>
+            </div>
         </div>
         
     </body>
@@ -34,42 +40,95 @@
 
     var socket = io.connect();
 
-    // create a network
-    var graph = document.getElementById('graph');
-    var infor = document.getElementById('infor');
-    var gameLog = document.getElementById('gameLog');
+    // Declare variables
+    var games, DEBUG = false;
+
+    // Get DOM elements
+    var graph    = document.getElementById('graph');
+    var info     = document.getElementById('info');
+    var gameLog  = document.getElementById('gameLog');
     var nodeInfo = document.getElementById('nodeInfo');
+
+    // Create network
     var graphData = {};
+    var network;
     var options   = {
-        // 'autoResize'  : true,
         'height'      : 'calc(100% - 2px)',
         'width'       : 'calc(100% - 1px)',
         'interaction' : { 'dragNodes':false },
         'edges'       : { 'width':2 },
         'physics'     : { 'enabled':false },
         'nodes'       : {
+            'chosen': { 'node':nodesOnClick },
+            'borderWidth': 2,
             'shape': 'dot',
             'size' : 30,
             'font' : {
                 'size' : 32,
                 'color': '#ffffff'
-            },
-            'borderWidth': 2,
-            'chosen': { 'node':nodesOnClick  }
+            }
         }
     };
-    var network, game;
 
     function nodesOnClick(values, id, selected, hovering) {
         values.size += 20;
         values.id  = id;
-        values.color = '#ffffff'
-        nodeInfo.innerHTML = JSON.stringify(values, null, 4).replace(/\n/g, "<br>").replace(/\"/g,'\'').replace(/ /g, '&nbsp;');
+        values.selected = selected;
+        values.hovering = hovering;
+        if(DEBUG) console.log("vaules", values);
+        //nodeInfo.innerHTML = JSON.stringify(values, null, 4).replace(/\n/g, "<br>").replace(/\"/g,'\'').replace(/ /g, '&nbsp;');
+        let str = '', inf = getNodeInfoById(id);
+        str += `ID： ${inf.id}<br>`;
+        str += `地形： ${inf.terrain}<br>`;
+        str += `玩家： ${(inf.player)? inf.player : '無'}<br>`;
+        str += `建築： ${(inf.building)? inf.building.name : '無'}<br>`;
+        str += `事件： ${(inf.triggered)? 'inf.event.name' : '未觸發'}<br>`;
+        str += `相鄰點： ${inf.neighbors.toString().replace(/,/g, ', ')}<br>`;
+        nodeInfo.innerHTML = str;
     }
 
     function showMessage(msg) {
         let time = new Date();
         gameLog.innerHTML = (`<text>${time.toLocaleTimeString()} | ${msg}</text><br>` + gameLog.innerHTML);
+    }
+
+    function getNodeInfoById(id) {
+        let node = game.allnode[id];
+        let inf  = {};
+        inf.id = id;
+        inf.neighbors = node.neighbors;
+        inf.terrain = getTerrainById(node.id, 'ZH');
+        inf.building = node.building || undefined;
+        return inf;
+    }
+
+    function getTerrainById(id, lang) {
+        if(lang === 'ZH') {
+            if(id[0] === 'r') return '資源';
+            if(id[0] === 'p') return '平原';
+            if(id[0] === 'f') return '森林';
+            if(id[0] === 'm') return '山地';
+            if(id[0] === 'o') return '海洋';
+            if(id[0] === 'b') return '王點';
+        }
+        else {
+            if(id[0] === 'r') return 'resource';
+            if(id[0] === 'p') return 'plain';
+            if(id[0] === 'f') return 'forest';
+            if(id[0] === 'm') return 'mountain';
+            if(id[0] === 'o') return 'ocean';
+            if(id[0] === 'b') return 'boss';
+        }
+        
+    }
+
+    function changeButton() {
+        for(let i in buttons){
+            if(buttons[i].isAvailable()) {
+                buttons[i].style.display = 'none'
+            }
+            else buttons[i].style.display = ''
+        }
     }
 
     function submitName() {
@@ -85,6 +144,14 @@
 
         // Check if available
         let playerCount = 0;
+        for(let i = 0; i < 4; i++) {
+            for(let j = i + 1; j < 4; j++) {
+                if(names[i] === names[j] && names[i] !== ''){
+                    showMessage("玩家不可同名");
+                    return;
+                }
+            }
+        }
         for(let i in names) if(names[i] !== '') playerCount++;
         if(!(playerCount >= 2 && playerCount <= 4)) {
             showMessage("玩家人數必須介於2~4之間");
@@ -96,12 +163,14 @@
         })
     }
 
+    // Response handler
     socket.on('response', function(data) {
-        console.log(data);
+        if(DEBUG) console.log("Get response", data);
         if(data.type === undefined) return;
         adapter[data.type](data);
     })
 
+    // Functions to handle all response
     var adapter = {
         'start': function(data) {
 
@@ -113,7 +182,7 @@
             graphData.edges = new vis.DataSet(data.game.graphEdges);
             network = new vis.Network(graph, graphData, options);
 
-            // Zoom in
+            // Zoom in effect
             network.once("beforeDrawing", function() {
                 network.focus('f08', { scale: 2 });
             });
@@ -129,8 +198,22 @@
             // Change interface
             showMessage('遊戲開始!!')
             $('#nameForm').hide();
+        },
+        'nextPhase': function(data) {
+            showMessage(`${data.game.phase} phase`)
+            changeButton()
         }
     }
+
+    var startPhase = {
+        'move': function() {
+
+        },
+        'collect': function() {
+
+        }
+    }
+
     // this.selectionHandler.selectNodes.apply(this.selectionHandler, arguments)
     // network.selectionHandler.selectNodes.apply(network.selectionHandler, [['b02']])
 

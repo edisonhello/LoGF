@@ -75,7 +75,7 @@ function setup(playerName) {
     return {
         'game': {
             'turn': startPlayer,
-            'phase': 'collect',
+            'phase': 'move',
             'players': players,
             'map': nodes,
             'allnode': allnode
