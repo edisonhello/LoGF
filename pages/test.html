@@ -80,7 +80,7 @@
         let str = '', inf = getNodeInfoById(id);
         str += `ID： ${inf.id}<br>`;
         str += `地形： ${inf.terrain}<br>`;
-        str += `玩家： ${(inf.player)? inf.player : '無'}<br>`;
+        str += `玩家： ${(inf.player)? inf.player.name : '無'}<br>`;
         str += `建築： ${(inf.building)? inf.building.name : '無'}<br>`;
         str += `事件： ${(inf.triggered)? 'inf.event.name' : '未觸發'}<br>`;
         str += `相鄰點： ${inf.neighbors.toString().replace(/,/g, ', ')}<br>`;
@@ -99,6 +99,7 @@
         inf.neighbors = node.neighbors;
         inf.terrain = getTerrainById(node.id, 'ZH');
         inf.building = node.building || undefined;
+        inf.player = node.player || undefined;
         return inf;
     }
 

@@ -4,8 +4,9 @@ const Node     = require('./node.js');
 const nodeData = require('../node_data.json');
 const nodePosition = require('../node_position.json');
 const Player = require('./player.js');
+const initLocation = ['p04', 'p07', 'p17', 'p21'];
 
-function setupNodes() {
+function setupNodes(playerName) {
     let allnode = {};
     let nodes = {
         'resource': {},
@@ -27,6 +28,12 @@ function setupNodes() {
     for(let key in nodeData) {
         for(let i in nodeData[key]) {
             allnode[key].neighbors[i] = nodeData[key][i];
+        }
+    }
+    for(let key in playerName) {
+        if(playerName.key !== '') {
+            allnode[initLocation[key]].player = { 'name':playerName[key] };
+            nodes.plain[initLocation[key]].player = { 'name':playerName[key] };
         }
     }
     return [allnode, nodes];
@@ -55,19 +62,13 @@ function getGraph(nodes) {
 function getPlayer(playerName) {
     let players = [];
     for(let i in playerName) {
-        let initLocation;
-        if(i === '0') initLocation = 'p04';
-        if(i === '1') initLocation = 'p07';
-        if(i === '2') initLocation = 'p17';
-        if(i === '3') initLocation = 'p21';
-        players.push(new Player(playerName[i], initLocation));
-        // console.log(players)
+        players.push(new Player(playerName[i], initLocation[i]));
     }
     return players;
 }
 
 function setup(playerName) {
-    let [allnode, nodes] = setupNodes();
+    let [allnode, nodes] = setupNodes(playerName);
     let [graphNodes, graphEdges] = getGraph(nodes);
     let players = getPlayer(playerName);
     let startPlayer = 0;
