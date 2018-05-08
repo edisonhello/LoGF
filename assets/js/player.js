@@ -9,6 +9,7 @@ module.exports = function(name, location) {
     
     // status initialize
     this.hp          = 20;
+    this.maxHp       = 20;
     this.action      = 10;
     this.saturation  = 10;
     this.oxygen      = 10;
