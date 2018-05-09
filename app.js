@@ -30,10 +30,10 @@ server.listen(port, function () {
 io.sockets.on('connection', function(socket) {
     let game;
     socket.on('start', function(data) {
-        game = handler(data, null, socket)
+        game = handler(data, null, socket);
     })
     socket.on('request', function(data) {
-        if(!game) return
-        handler(data, game, socket)
+        if(!game) return;
+        handler(data, game, socket);
     });
 });

@@ -25,7 +25,7 @@
             <div id="nodeInfo"></div>
             <h1>Options</h1>
             <div id="gameOptions">
-                <button onClick="reqSender['move'](network.getSelectedNodes())">Move</button>
+                <button onClick="reqSender['move'](network.getSelectedNodes()[0])">Move</button>
                 <button onClick="showMessage('功能開發中')">Skip</button>
                 <button onClick="showMessage('功能開發中')">Eat</button>
                 <button onClick="showMessage('功能開發中')">Collect</button>
@@ -39,38 +39,22 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type="text/javascript">
 
-    var socket = io.connect();
-
     // declare variables
+    var socket = io.connect();
     var games, DEBUG = false;
-    var buttons = []
+    var buttons = [];
+    var moveRequirement = {
+        'p': { 'action':1, "oxygen":0 },
+        'f': { 'action':2, "oxygen":0 },
+        'm': { 'action':3, "oxygen":0 },
+        'o': { 'action':2, "oxygen":3 },
+        'b': { 'action':2, "oxygen":3 }
+    }
 
     // get DOM elements
-    var graph    = document.getElementById('graph');
     var info     = document.getElementById('info');
     var gameLog  = document.getElementById('gameLog');
     var nodeInfo = document.getElementById('nodeInfo');
-
-    // create network
-    var graphData = {};
-    var network;
-    var options   = {
-        'height'      : 'calc(100% - 2px)',
-        'width'       : 'calc(100% - 1px)',
-        'interaction' : { 'dragNodes':false },
-        'edges'       : { 'width':2 },
-        'physics'     : { 'enabled':false },
-        'nodes'       : {
-            'chosen': { 'node':nodesOnClick },
-            'borderWidth': 2,
-            'shape': 'dot',
-            'size' : 30,
-            'font' : {
-                'size' : 32,
-                'color': '#ffffff'
-            }
-        }
-    };
 
     function nodesOnClick(values, id, selected, hovering) {
         values.size += 20;
@@ -82,47 +66,11 @@
         let str = '', inf = getNodeInfoById(id);
         str += `ID： ${inf.id}<br>`;
         str += `地形： ${inf.terrain}<br>`;
-        str += `玩家： ${(inf.player)? inf.player.name : '無'}<br>`;
+        str += `玩家： ${(inf.players.length)? inf.players.toString() : '無'}<br>`;
         str += `建築： ${(inf.building)? inf.building.name : '無'}<br>`;
         str += `事件： ${(inf.triggered)? 'inf.event.name' : '未觸發'}<br>`;
         str += `相鄰點： ${inf.neighbors.toString().replace(/,/g, ', ')}<br>`;
         nodeInfo.innerHTML = str;
-    }
-
-    function showMessage(msg) {
-        let time = new Date();
-        gameLog.innerHTML = (`<text>${time.toLocaleTimeString()} | ${msg}</text><br>` + gameLog.innerHTML);
-    }
-
-    function getNodeInfoById(id) {
-        let node = game.allnode[id];
-        let inf  = {};
-        inf.id = id;
-        inf.neighbors = node.neighbors;
-        inf.terrain = getTerrainById(node.id, 'ZH');
-        inf.building = node.building || undefined;
-        inf.player = node.player || undefined;
-        return inf;
-    }
-
-    function getTerrainById(id, lang) {
-        if(lang === 'ZH') {
-            if(id[0] === 'r') return '資源';
-            if(id[0] === 'p') return '平原';
-            if(id[0] === 'f') return '森林';
-            if(id[0] === 'm') return '山地';
-            if(id[0] === 'o') return '海洋';
-            if(id[0] === 'b') return '王點';
-        }
-        else {
-            if(id[0] === 'r') return 'resource';
-            if(id[0] === 'p') return 'plain';
-            if(id[0] === 'f') return 'forest';
-            if(id[0] === 'm') return 'mountain';
-            if(id[0] === 'o') return 'ocean';
-            if(id[0] === 'b') return 'boss';
-        }
-        
     }
 
     function changeButton() {
@@ -166,59 +114,12 @@
         })
     }
 
-    // reqSender
-    var reqSender = {
-        'move': function(destination) {
-            if(!Array.isArray(destination)) return;
-            if(destination.length !== 1) return;
-            socket.emit('request', {
-                'type': 'move',
-                'destination': destination[0]
-            })
-        }
-    }
-
     // catch response
     socket.on('response', function(data) {
         if(DEBUG) console.log("Get response", data);
         if(data.type === undefined) return;
         resHandler[data.type](data);
     })
-
-    // resHandler
-    var resHandler = {
-        'start': function(data) {
-
-            // get game status
-            game = data.game.game;
-
-            // draw graph
-            graphData.nodes = new vis.DataSet(data.game.graphNodes);
-            graphData.edges = new vis.DataSet(data.game.graphEdges);
-            network = new vis.Network(graph, graphData, options);
-
-            // zoom in effect
-            network.once("beforeDrawing", function() {
-                network.focus('f08', { scale: 2 });
-            });
-            network.once("afterDrawing", function() {
-                network.fit({
-                    animation: {
-                        duration: 3000,
-                        easingFunction: 'linear'
-                    }
-                });
-            });
-
-            // change interface
-            showMessage('遊戲開始!!')
-            $('#nameForm').hide();
-        },
-        'nextPhase': function(data) {
-            showMessage(`${data.game.phase} phase`);
-            changeButton();
-        }
-    }
 
     var startPhase = {
         'move': function() {
@@ -229,7 +130,6 @@
         }
     }
 
-    // this.selectionHandler.selectNodes.apply(this.selectionHandler, arguments)
-    // network.selectionHandler.selectNodes.apply(network.selectionHandler, [['b02']])
-
 </script>
+<script type="text/javascript" src="/assets/sources/reqSender.js"></script>
+<script type="text/javascript" src="/assets/sources/resHandler.js"></script>

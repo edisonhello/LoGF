@@ -32,8 +32,8 @@ function setupNodes(playerName) {
     }
     for(let key in playerName) {
         if(playerName.key !== '') {
-            allnode[initLocation[key]].player = { 'name':playerName[key] };
-            nodes.plain[initLocation[key]].player = { 'name':playerName[key] };
+            allnode[initLocation[key]].players.push(playerName[key]);
+            nodes.plain[initLocation[key]].players.push(playerName[key]);
         }
     }
     return [allnode, nodes];
@@ -62,6 +62,7 @@ function getGraph(nodes) {
 function getPlayer(playerName) {
     let players = [];
     for(let i in playerName) {
+        if(playerName[i] === ' ') continue;
         players.push(new Player(playerName[i], initLocation[i]));
     }
     return players;
@@ -71,11 +72,10 @@ function setup(playerName) {
     let [allnode, nodes] = setupNodes(playerName);
     let [graphNodes, graphEdges] = getGraph(nodes);
     let players = getPlayer(playerName);
-    let startPlayer = 0;
-    while(players[startPlayer].playerName === '') ++startPlayer;
     return {
         'game': {
-            'turn': startPlayer,
+            'round': 0,
+            'turn': 0,
             'phase': 'move',
             'players': players,
             'map': nodes,
