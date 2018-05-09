@@ -15,7 +15,7 @@ module.exports = function(name, location) {
     this.oxygen      = 10;
     this.capacity    = 10;
     this.attack      = 2;
-    this.defence     = 0;
+    this.defense     = 0;
     this.potential   = 0;
 
     // resource
@@ -24,7 +24,7 @@ module.exports = function(name, location) {
     this.stone       = 0;
     this.diamond     = 0;
 
-    // play harvest action allowed
+    // player harvest action allowed
     this.canHarvestStone = false;
     this.canHarvestDiamond = false;
 }
