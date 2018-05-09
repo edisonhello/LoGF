@@ -2,10 +2,12 @@
 <html>
     <head>
         <title>LoGF</title>
+        <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="/assets/css/vis-network.min.css">
         <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
     </head>
     <body>
+    <div id="testt"></div>
         <div id="graph">
             <div id="nameForm">
                 <h1>Please enter your name</h1>
@@ -23,7 +25,7 @@
             <div id="nodeInfo"></div>
             <h1>Options</h1>
             <div id="gameOptions">
-                <button onClick="showMessage('功能開發中')">Move</button>
+                <button onClick="reqSender['move'](network.getSelectedNodes())">Move</button>
                 <button onClick="showMessage('功能開發中')">Skip</button>
                 <button onClick="showMessage('功能開發中')">Eat</button>
                 <button onClick="showMessage('功能開發中')">Collect</button>
@@ -40,16 +42,17 @@
 
     var socket = io.connect();
 
-    // Declare variables
+    // declare variables
     var games, DEBUG = false;
+    var buttons = []
 
-    // Get DOM elements
+    // get DOM elements
     var graph    = document.getElementById('graph');
     var info     = document.getElementById('info');
     var gameLog  = document.getElementById('gameLog');
     var nodeInfo = document.getElementById('nodeInfo');
 
-    // Create network
+    // create network
     var graphData = {};
     var network;
     var options   = {
@@ -126,16 +129,16 @@
     function changeButton() {
         for(let i in buttons){
             if(buttons[i].isAvailable()) {
-                buttons[i].style.display = 'none'
+                buttons[i].style.display = 'none';
             }
-            else buttons[i].style.display = ''
+            else buttons[i].style.display = '';
         }
     }
 
     function submitName() {
 
-        // Get value
-        var inputs = $('#nameForm > input')
+        // get value
+        var inputs = $('#nameForm > input');
         var names = [
             inputs[0].value,
             inputs[1].value,
@@ -143,7 +146,7 @@
             inputs[3].value
         ]
 
-        // Check if available
+        // check if available
         let playerCount = 0;
         for(let i = 0; i < 4; i++) {
             for(let j = i + 1; j < 4; j++) {
@@ -164,26 +167,38 @@
         })
     }
 
-    // Response handler
+    // reqSender
+    var reqSender = {
+        'move': function(destination) {
+            if(!Array.isArray(destination)) return;
+            if(destination.length !== 1) return;
+            socket.emit('request', {
+                'type': 'move',
+                'destination': destination[0]
+            })
+        }
+    }
+
+    // catch response
     socket.on('response', function(data) {
         if(DEBUG) console.log("Get response", data);
         if(data.type === undefined) return;
-        adapter[data.type](data);
+        resHandler[data.type](data);
     })
 
-    // Functions to handle all response
-    var adapter = {
+    // resHandler
+    var resHandler = {
         'start': function(data) {
 
-            // Get game status
+            // get game status
             game = data.game.game;
 
-            // Draw graph
+            // draw graph
             graphData.nodes = new vis.DataSet(data.game.graphNodes);
             graphData.edges = new vis.DataSet(data.game.graphEdges);
             network = new vis.Network(graph, graphData, options);
 
-            // Zoom in effect
+            // zoom in effect
             network.once("beforeDrawing", function() {
                 network.focus('f08', { scale: 2 });
             });
@@ -196,13 +211,13 @@
                 });
             });
 
-            // Change interface
+            // change interface
             showMessage('遊戲開始!!')
             $('#nameForm').hide();
         },
         'nextPhase': function(data) {
-            showMessage(`${data.game.phase} phase`)
-            changeButton()
+            showMessage(`${data.game.phase} phase`);
+            changeButton();
         }
     }
 
