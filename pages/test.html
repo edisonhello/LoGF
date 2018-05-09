@@ -37,11 +37,14 @@
 <script type="text/javascript" src="/assets/lib/vis.js"></script>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="/assets/sources/reqSender.js"></script>
+<script type="text/javascript" src="/assets/sources/resHandler.js"></script>
+<script type="text/javascript" src="/assets/sources/function.js"></script>
 <script type="text/javascript">
 
     // declare variables
     var socket = io.connect();
-    var games, DEBUG = false;
+    var games, DEBUG = true;
     var buttons = [];
     var moveRequirement = {
         'p': { 'action':1, "oxygen":0 },
@@ -61,7 +64,6 @@
         values.id  = id;
         values.selected = selected;
         values.hovering = hovering;
-        if(DEBUG) console.log("vaules", values);
         //nodeInfo.innerHTML = JSON.stringify(values, null, 4).replace(/\n/g, "<br>").replace(/\"/g,'\'').replace(/ /g, '&nbsp;');
         let str = '', inf = getNodeInfoById(id);
         str += `ID： ${inf.id}<br>`;
@@ -131,5 +133,4 @@
     }
 
 </script>
-<script type="text/javascript" src="/assets/sources/reqSender.js"></script>
-<script type="text/javascript" src="/assets/sources/resHandler.js"></script>
+<script type="text/javascript" src="/assets/sources/graph.js"></script>

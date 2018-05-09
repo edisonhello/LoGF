@@ -20,8 +20,19 @@ var options   = {
 }
 
 // draw graph
-function draw(_game) {
-    graphData.nodes = new vis.DataSet(_game.graphNodes);
-    graphData.edges = new vis.DataSet(_game.graphEdges);
+function draw(graphNodes, graphEdges) {
+    graphData.nodes = new vis.DataSet(graphNodes);
+    graphData.edges = new vis.DataSet(graphEdges);
     network = new vis.Network(graph, graphData, options);
+
+    network.on('deselectNode', function (params) {
+        nodeInfo.innerHTML = '';
+    })
+
+    document.addEventListener('keydown', function(event){
+        if(event.keyCode === 27){
+            network.unselectAll();
+            nodeInfo.innerHTML = '';
+        }
+    })
 }

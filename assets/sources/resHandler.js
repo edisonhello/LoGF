@@ -5,6 +5,9 @@ var resHandler = {
         // get game status
         game = data.game.game;
 
+        // draw map
+        draw(data.game.graphNodes, data.game.graphEdges)
+
         // zoom in effect
         network.once("beforeDrawing", function() {
             network.focus('f08', { scale: 2 });
@@ -23,9 +26,10 @@ var resHandler = {
         $('#nameForm').hide();
     },
     'move': function(data) {
-        game = data.game
-        draw(game)
-    }
+        game = data.game;
+        network.selectNodes([data.destination]);
+        showMessage(`玩家 ${data.player} 移動至 ${data.destination}`)
+    },
     'nextPhase': function(data) {
         showMessage(`${data.game.phase} phase`);
         changeButton();

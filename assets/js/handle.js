@@ -44,6 +44,7 @@ var adapter = {
         let currentPosition = currentPlayer.location;
         if(game.allnode[currentPosition].neighbors.indexOf(data.destination) === -1) return;
         let movable = true;
+        Object.entries
         Object.entries(requirement[data.destination[0]]).forEach(([key, val]) => {
             if(currentPlayer[key] < val) movable = false;
         });
@@ -54,13 +55,15 @@ var adapter = {
         });
 
         let players = game.allnode[currentPlayer.location].players;
-        players.splice(player.indexOf(currentPlayer.playerName), 1);
+        players.splice(players.indexOf(currentPlayer.playerName), 1);
         game.allnode[data.destination].players.push(currentPlayer.playerName);
         currentPlayer.location = data.destination;
 
         socket.emit('response', {
             'type': 'move',
-            'game': game
+            'game': game,
+            'destination': data.destination,
+            'player': currentPlayer.playerName
         });
     }
 }
