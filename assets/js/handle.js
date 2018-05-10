@@ -3,8 +3,9 @@
 const setup = require('./setup.js');
 
 function nextPhase(game) {
-    const phases = ['move', 'trigger', 'build', 'collect'];
-    game.phases = phases[(phases.indexOf(game.phases) + 1) % 4];
+    const phases = ['revive', 'move', 'trigger', 'build', 'collect'];
+    game.phase = phases[(phases.indexOf(game.phase) + 1) % 5];
+    if(game.phase === 'revive' && !game.players[game.turn].isDead) nextPhase(game);
 }
 
 function shufflePlayer(game) {
@@ -116,6 +117,9 @@ var adapter = {
 
             ++ game.turn;
             if(game.turn === game.players.length) shufflePlayer(game);
+
+            game.phase = 'collect';
+            nextPhase(game);
             socket.emit('response', {
                 'type': 'skip',
                 'game': game
@@ -135,6 +139,19 @@ var adapter = {
                 'game': game
             });
         }
+    },
+    'revive': (data, game, socket) => {
+        if(game.phase !== 'revive') return;
+        let player = game.players[game.turn];
+        if(player.spawnPoint.indexOf(data.spawnPoint) === -1) return;
+        player.location = data.spawnPoint;
+        player.isDead = false;
+
+        nextPhase(game);
+        socket.emit('response', {
+            'type': 'revive',
+            'game': game
+        });
     }
 }
 
