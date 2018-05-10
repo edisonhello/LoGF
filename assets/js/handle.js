@@ -10,11 +10,11 @@ function nextPhase(game) {
 function shufflePlayer(game) {
     game.turn = 0;
     ++ game.round;
-    game.players.sort((p1, p2) => return p1.potential < p2.potential);
+    game.players.sort((p1, p2) => { return p1.potential < p2.potential; });
     for(let i in game.players) for(let j in game.players) {
         if(i === j) continue;
         if(game.players[i].potential !== game.players[j].potential) continue;
-        [game.players[i], game.player[j]] = [game.players[j], game.players[i]];
+        [game.players[i], game.players[j]] = [game.players[j], game.players[i]];
     }
 }
 

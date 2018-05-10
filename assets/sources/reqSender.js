@@ -22,7 +22,6 @@ var reqSender = {
                 'type': 'move',
                 'destination': destination
             })
-            showMessage(`${game.players[game.turn].playerName} stayed at ${destination}`)
             return;
         }
         if(game.players[game.turn].action < moveRequirement[destination[0]].action){

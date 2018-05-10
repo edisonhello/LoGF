@@ -36,3 +36,19 @@ function getTerrainById(id, lang) {
         if(id[0] === 'b') return 'boss';
     }
 }
+
+// show up available buttons
+function changeButton() {
+    for(let i in buttons){
+        if(buttons[i].isAvailable()) {
+            buttons[i].style.display = 'none';
+        }
+        else buttons[i].style.display = '';
+    }
+}
+
+// unselect nodes
+function unselectNodes() {
+    if(network) network.unselectAll();
+    nodeInfo.innerHTML = '';
+}

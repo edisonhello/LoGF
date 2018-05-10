@@ -31,8 +31,7 @@ function draw(graphNodes, graphEdges) {
 
     document.addEventListener('keydown', function(event){
         if(event.keyCode === 27){
-            network.unselectAll();
-            nodeInfo.innerHTML = '';
+            unselectNodes();
         }
     })
 }
