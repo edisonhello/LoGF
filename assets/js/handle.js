@@ -2,6 +2,11 @@
 
 const setup = require('./setup.js');
 
+function nextPhase(game) {
+    const phases = ['move', 'trigger', 'build', 'collect'];
+    game.phases = phases[(phases.indexOf(game.phases) + 1) % 4];
+}
+
 var adapter = {
     'refresh': (data, game, socket) => {
         socket.emit('response', {
@@ -40,25 +45,33 @@ var adapter = {
             'b': { 'action':2, 'oxygen':3 }
         };
         if(typeof(requirement[data.destination[0]]) !== 'object') return;
+        if(typeof(game.allnode[data.destination]) !== 'object') return;
         let currentPlayer = game.players[game.turn];
         let currentPosition = currentPlayer.location;
-        if(game.allnode[currentPosition].neighbors.indexOf(data.destination) === -1) return;
-        let movable = true;
-        Object.entries
-        Object.entries(requirement[data.destination[0]]).forEach(([key, val]) => {
-            if(currentPlayer[key] < val) movable = false;
-        });
-        if(!movable) return;
+        if(currentPosition === data.destination) {
+            if(currentPlayer.action < 1) return;
+            currentPlayer.action -= 1;
+        }
+        else{
+            if(game.allnode[currentPosition].neighbors.indexOf(data.destination) === -1) return;
+            let movable = true;
+            Object.entries
+            Object.entries(requirement[data.destination[0]]).forEach(([key, val]) => {
+                if(currentPlayer[key] < val) movable = false;
+            });
+            if(!movable) return;
 
-        Object.entries(requirement[data.destination[0]]).forEach(([key, val]) => {
-            currentPlayer[key] -= val;
-        });
+            Object.entries(requirement[data.destination[0]]).forEach(([key, val]) => {
+                currentPlayer[key] -= val;
+            });
 
-        let players = game.allnode[currentPlayer.location].players;
-        players.splice(players.indexOf(currentPlayer.playerName), 1);
-        game.allnode[data.destination].players.push(currentPlayer.playerName);
-        currentPlayer.location = data.destination;
+            let players = game.allnode[currentPlayer.location].players;
+            players.splice(players.indexOf(currentPlayer.playerName), 1);
+            game.allnode[data.destination].players.push(currentPlayer.playerName);
+            currentPlayer.location = data.destination;
+        }
 
+        nextPhase(game);
         socket.emit('response', {
             'type': 'move',
             'game': game,
