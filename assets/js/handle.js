@@ -18,6 +18,19 @@ function shufflePlayer(game) {
     }
 }
 
+function playerDeath(player) {
+    player.wood = Math.round(player.wood / 2);
+    player.apple = Math.round(player.apple / 2);
+    player.stone = Math.round(player.stone / 2);
+    player.diamond = Math.round(player.diamond / 2);
+    player.saturation = 5;
+    player.oxygen = 10;
+    player.hp = 10;
+    player.potential = Math.round(player.potential * 0.8);
+    player.isDead = true;
+    player.deathProtect = 2;
+}
+
 var adapter = {
     'refresh': (data, game, socket) => {
         socket.emit('response', {
@@ -90,16 +103,38 @@ var adapter = {
         });
     },
     'skip': (data, game, socket) => {
-        if(game.phase !== 'move') return;
-        if(!game.players[game.turn].isMoved) return;
-        game.players[game.turn].isMoved = false;
-        ++ game.turn;
+        if(game.phase === 'move') {
+            let player = game.players[game.turn];
+            if(!player.isMoved) return;
+            player.isMoved = false;
 
-        if(game.turn === game.players.length) shufflePlayer(game);
-        socket.emit('response', {
-            'type': 'skip',
-            'game': game
-        });
+            const recover = [0, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3];
+            player.action += recover[player.saturation] + recover[player.oxygen];
+            -- player.deathProtect;
+            player.saturation -= 2;
+            if(player.saturation <= 0) playerDeath(player);
+
+            ++ game.turn;
+            if(game.turn === game.players.length) shufflePlayer(game);
+            socket.emit('response', {
+                'type': 'skip',
+                'game': game
+            });
+        }
+        else if(game.phase === 'build') {
+            nextPhase(game);
+            socket.emit('response', {
+                'type': 'skip',
+                'game': game
+            });
+        }
+        else if(game.phase === 'collect') {
+            nextPhase(game);
+            socket.emit('response', {
+                'type': 'skip',
+                'game': game
+            });
+        }
     }
 }
 

@@ -5,8 +5,10 @@ module.exports = function(name, location) {
     // player data
     this.playerName  = name;
     this.location    = location;
-    this.spawnPoint  = location;
+    this.spawnPoint  = [location];
     this.isMoved = false;
+    this.isDead = false;
+    this.deathProtect = 0;
 
     // status initialize
     this.hp          = 20;
