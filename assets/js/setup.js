@@ -31,7 +31,7 @@ function setupNodes(playerName) {
         }
     }
     for(let key in playerName) {
-        if(playerName.key !== '') {
+        if(playerName[key] !== '') {
             allnode[initLocation[key]].players.push(playerName[key]);
         }
     }

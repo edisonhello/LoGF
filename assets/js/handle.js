@@ -40,11 +40,11 @@ var adapter = {
             'b': { 'action':2, 'oxygen':3 }
         };
         if(typeof(requirement[data.destination[0]]) !== 'object') return;
+        if(typeof(game.allnode[data.destination]) !== 'object') return;
         let currentPlayer = game.players[game.turn];
         let currentPosition = currentPlayer.location;
         if(game.allnode[currentPosition].neighbors.indexOf(data.destination) === -1) return;
         let movable = true;
-        Object.entries
         Object.entries(requirement[data.destination[0]]).forEach(([key, val]) => {
             if(currentPlayer[key] < val) movable = false;
         });

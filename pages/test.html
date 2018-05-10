@@ -26,7 +26,7 @@
             <h1>Options</h1>
             <div id="gameOptions">
                 <button onClick="reqSender['move'](network.getSelectedNodes()[0])">Move</button>
-                <button onClick="showMessage('功能開發中')">Skip</button>
+                <button onClick="reqSender['move'](game.players[game.turn].location)">Stay</button>
                 <button onClick="showMessage('功能開發中')">Eat</button>
                 <button onClick="showMessage('功能開發中')">Collect</button>
             </div>
@@ -46,13 +46,6 @@
     var socket = io.connect();
     var games, DEBUG = true;
     var buttons = [];
-    var moveRequirement = {
-        'p': { 'action':1, "oxygen":0 },
-        'f': { 'action':2, "oxygen":0 },
-        'm': { 'action':3, "oxygen":0 },
-        'o': { 'action':2, "oxygen":3 },
-        'b': { 'action':2, "oxygen":3 }
-    }
 
     // get DOM elements
     var info     = document.getElementById('info');
