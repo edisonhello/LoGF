@@ -27,7 +27,7 @@
             <div id="gameOptions">
                 <button onClick="reqSender['move'](network.getSelectedNodes()[0])">Move</button>
                 <button onClick="reqSender['move'](game.players[game.turn].location)">Stay</button>
-                <button onClick="showMessage('功能開發中')">Eat</button>
+                <button onClick="reqSender['skip']()">Skip</button>
                 <button onClick="showMessage('功能開發中')">Collect</button>
             </div>
         </div>
@@ -58,14 +58,7 @@
         values.selected = selected;
         values.hovering = hovering;
         //nodeInfo.innerHTML = JSON.stringify(values, null, 4).replace(/\n/g, "<br>").replace(/\"/g,'\'').replace(/ /g, '&nbsp;');
-        let str = '', inf = getNodeInfoById(id);
-        str += `ID： ${inf.id}<br>`;
-        str += `地形： ${inf.terrain}<br>`;
-        str += `玩家： ${(inf.players.length)? inf.players.toString() : '無'}<br>`;
-        str += `建築： ${(inf.building)? inf.building.name : '無'}<br>`;
-        str += `事件： ${(inf.triggered)? 'inf.event.name' : '未觸發'}<br>`;
-        str += `相鄰點： ${inf.neighbors.toString().replace(/,/g, ', ')}<br>`;
-        nodeInfo.innerHTML = str;
+        nodeInfo.innerHTML = getNodeInfoById(id);
     }
 
     function changeButton() {

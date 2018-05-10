@@ -7,12 +7,13 @@ function showMessage(msg) {
 // get node information by id
 function getNodeInfoById(id) {
     let node = game.allnode[id];
-    let inf  = {};
-    inf.id = id;
-    inf.neighbors = node.neighbors;
-    inf.terrain = getTerrainById(node.id, 'ZH');
-    inf.building = node.building || undefined;
-    inf.players = node.players || undefined;
+    let inf  = '';
+    inf += `ID： ${id}<br>`;
+    inf += `地形： ${getTerrainById(node.id, 'ZH')}<br>`;
+    inf += `玩家： ${(node.players.length)? node.players.toString() : '無'}<br>`;
+    inf += `建築： ${(node.building)? node.building.name : '無'}<br>`;
+    inf += `事件： ${(node.triggered)? 'node.event.name' : '未觸發'}<br>`;
+    inf += `相鄰點： ${node.neighbors.toString().replace(/,/g, ', ')}<br>`;
     return inf;
 }
 

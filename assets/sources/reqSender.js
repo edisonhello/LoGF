@@ -12,7 +12,7 @@ var reqSender = {
     'move': function(destination) {
         console.log('reqSender:4 destination', destination)
         if(typeof(destination) !== 'string') return;
-        if(game.map[destination] !== 'object') return;
+        if(typeof(game.allnode[destination]) !== 'object') return;
         if(destination === game.players[game.turn].location){
             if(game.players[game.turn].action < 1){
                 showMessage('行動力不足，移動不可');
@@ -22,6 +22,8 @@ var reqSender = {
                 'type': 'move',
                 'destination': destination
             })
+            showMessage(`${game.players[game.turn].playerName} stayed at ${destination}`)
+            return;
         }
         if(game.players[game.turn].action < moveRequirement[destination[0]].action){
             showMessage('行動力不足，移動不可');
@@ -44,5 +46,10 @@ var reqSender = {
             'destination': destination
         })
         console.log('sent move req')
+    },
+    'skip': function() {
+        socket.emit('request', {
+            'type': 'skip'
+        })
     }
 }

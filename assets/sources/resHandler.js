@@ -26,9 +26,12 @@ var resHandler = {
         $('#nameForm').hide();
     },
     'move': function(data) {
+        if(game.players[game.turn].location === data.destination){
+            showMessage(`${game.players[game.turn].playerName} 停留在 ${destination}`))
+        }
+        else showMessage(`玩家 ${data.player} 移動至 ${data.destination}`)
         game = data.game;
         network.selectNodes([data.destination]);
-        showMessage(`玩家 ${data.player} 移動至 ${data.destination}`)
     },
     'nextPhase': function(data) {
         showMessage(`${data.game.phase} phase`);

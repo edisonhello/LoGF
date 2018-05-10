@@ -61,7 +61,7 @@ function getGraph(nodes) {
 function getPlayer(playerName) {
     let players = [];
     for(let i in playerName) {
-        if(playerName[i] === ' ') continue;
+        if(playerName[i] === '') continue;
         players.push(new Player(playerName[i], initLocation[i]));
     }
     return players;
