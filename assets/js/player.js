@@ -6,7 +6,8 @@ module.exports = function(name, location) {
     this.playerName  = name;
     this.location    = location;
     this.spawnPoint  = location;
-    
+    this.isMoved = false;
+
     // status initialize
     this.hp          = 20;
     this.maxHp       = 20;
