@@ -1,10 +1,12 @@
 'use strict'
 
-const Node     = require('./node.js');
-const nodeData = require('../node_data.json');
-const nodePosition = require('../node_position.json');
-const Player = require('./player.js');
-const initLocation = ['p04', 'p07', 'p17', 'p21'];
+const Node          = require('./node.js');
+const nodeData      = require('../node_data.json');
+const nodePosition  = require('../node_position.json');
+const nodeImg       = require('../node_img.json');
+const Player        = require('./player.js');
+const PlayersImg    = require('../players_img.json');
+const initLocation  = ['p04', 'p07', 'p17', 'p21'];
 
 function setupNodes(playerName) {
     let allnode = {};
@@ -46,6 +48,8 @@ function getGraph(nodes) {
             if(nodePosition[nodeKey] !== undefined) {
                 nNode.x = nodePosition[nodeKey].x * 100;
                 nNode.y = nodePosition[nodeKey].y * 100;
+                nNode.image = nodeImg[category];
+                nNode.shape = 'image';
             }
             gNodes.push(nNode);
             for(let idx in nodes[category][nodeKey]['neighbors']) {
@@ -67,10 +71,37 @@ function getPlayer(playerName) {
     return players;
 }
 
+function setupPlayers(players){
+    let graphPlayers = [];
+    for(let i in players){
+        let PImg = {};
+        for(let j in nodePosition){
+            if(players[i].location !== j) continue;
+            PImg = {
+                'id':    players[i].playerName,
+                'label': players[i].playerName,
+                'x':     nodePosition[players[i].location].x * 100,
+                'y':     (nodePosition[players[i].location].y + 2) * 100,
+                'image': undefined,
+                'shape': 'circularImage'
+            };
+        }
+        graphPlayers.push(PImg);
+    }
+    for(let j = 0;j < 4;j++){
+        if(graphPlayers[j] == null) break;
+        if(graphPlayers[j].image == undefined){
+            graphPlayers[j].image = PlayersImg[j];
+        }        
+    }
+    return graphPlayers;
+}
+
 function setup(playerName) {
     let [allnode, nodes] = setupNodes(playerName);
     let [graphNodes, graphEdges] = getGraph(nodes);
     let players = getPlayer(playerName);
+    let graphPlayers = setupPlayers(players);
     return {
         'game': {
             'round': 0,
@@ -81,7 +112,8 @@ function setup(playerName) {
             'allnode': allnode
         },
         'graphNodes': graphNodes,
-        'graphEdges': graphEdges
+        'graphEdges': graphEdges,
+        'graphPlayers': graphPlayers
     }
 }
 
