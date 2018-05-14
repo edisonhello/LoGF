@@ -20,9 +20,10 @@ var options   = {
 }
 
 // draw graph
-function draw(graphNodes, graphEdges) {
-    graphData.nodes = new vis.DataSet(graphNodes);
-    graphData.edges = new vis.DataSet(graphEdges);
+function draw(graphNodes, graphEdges, graphPlayers) {
+    graphData.nodes   = new vis.DataSet(graphNodes);
+    graphData.edges   = new vis.DataSet(graphEdges);
+    graphData.players = new vis.DataSet(graphPlayers);
     network = new vis.Network(graph, graphData, options);
 
     network.on('deselectNode', function (params) {
