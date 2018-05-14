@@ -6,7 +6,7 @@ var resHandler = {
         game = data.game.game;
 
         // draw map
-        draw(data.game.graphNodes, data.game.graphEdges)
+        draw(data.game.graphNodes, data.game.graphEdges, data.game.graphPlayers);
 
         // zoom in effect
         network.once("beforeDrawing", function() {
