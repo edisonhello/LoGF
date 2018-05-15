@@ -78,12 +78,13 @@ function setupPlayers(players){
         for(let j in nodePosition){
             if(players[i].location !== j) continue;
             PImg = {
-                'id':    players[i].playerName,
-                'label': players[i].playerName,
-                'x':     nodePosition[players[i].location].x * 100,
-                'y':     nodePosition[players[i].location].y * 100 - 20,
-                'image': undefined,
-                'shape': 'circularImage'
+                'id'          :    players[i].playerName,
+                'x'           :  nodePosition[players[i].location].x * 100 + 10,
+                'y'           :  nodePosition[players[i].location].y * 100 - 10,
+                'image'       : undefined,
+                'shape'       : 'circularImage',
+                'interaction' : { 'hover': false },
+                'level'       : 1
             };
         }
         graphPlayers.push(PImg);
@@ -93,6 +94,24 @@ function setupPlayers(players){
         if(graphPlayers[j].image == undefined){
             graphPlayers[j].image = PlayersImg[j];
         }
+    }
+    for(let i in graphPlayers){
+      let PLabel = {
+        'id'          : graphPlayers[i].id + "Label",
+        'label'       : graphPlayers[i].id,
+        'x'           : graphPlayers[i].x,
+        'y'           : graphPlayers[i].y - 60,
+        'shape'       : 'box',
+        'interaction' : { 'hover': false },
+        'color'       : '#333631',
+        'font'        : {
+          'color'  : '#fff8dc',
+          'vadjust': 2,
+          'size'   : 28
+        },
+        'level'       : 10
+      };
+      graphPlayers.push(PLabel);
     }
     return graphPlayers;
 }
@@ -114,8 +133,8 @@ function setup(playerName) {
             'map': nodes,
             'allnode': allnode
         },
-        'graphNodes': graphNodes,
-        'graphEdges': graphEdges
+        'graphNodes'   : graphNodes,
+        'graphEdges'   : graphEdges
     }
 }
 
