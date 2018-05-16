@@ -53,7 +53,9 @@
     var nodeInfo = document.getElementById('nodeInfo');
 
     function nodesOnClick(values, id, selected, hovering) {
-        values.size += 20;
+        if(!game.allnode[id]) return;
+        if(id[0] !== 'o'){ values.size += 15; }
+        if(id[0] === 'o'){ values.size += 8;  }
         values.id  = id;
         values.selected = selected;
         values.hovering = hovering;
