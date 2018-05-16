@@ -24,14 +24,14 @@ var options  = {
         },
     },
     'groups': {
-      'ocean': {
-        'color'       : {
-          'background':'#ff3333',
-          'border'    :'#e60000'
-        },
-        'shape'       :'dot',
-        'size'        : 10
-      }
+      'ocean'      : { 'color': { 'background':'#b8494f', 'border':'#b7282e' },
+                       'shape': 'dot', 'size': 10 },
+      'forest'     : { 'color': { 'background':'#956f29', 'border':'#ad7d4c' } },
+      'mountain'   : { 'color': '#3eb370'},
+      'boss'       : { 'color': { 'background':'#ec6d7e', 'border':'#e60000' },
+                       'shape' : 'image', 'size' : 50, 'font':{ 'vadjust':-7 } },
+      'player'     : { 'color': '#7b7c7d'},
+      'playerLabel': { 'color': '#333631'}
     }
 }
 
