@@ -18,11 +18,20 @@ var options  = {
         'shape'      : 'circularImage',
         'size'       : 30,
         'font'       : {
-              'size' : 32,
-              'color': '#ffffff',
+            'size'   : 32,
+            'color'  : '#ffffff',
             'vadjust': +5
         },
-        'level'      : 1
+    },
+    'groups': {
+      'ocean': {
+        'color'       : {
+          'background':'#ff3333',
+          'border'    :'#e60000'
+        },
+        'shape'       :'dot',
+        'size'        : 10
+      }
     }
 }
 
@@ -34,11 +43,11 @@ function draw(graphNodes, graphEdges) {
 
     network.on('deselectNode', function (params) {
         nodeInfo.innerHTML = '';
-    });
+    })
 
     document.addEventListener('keydown', function(event){
         if(event.keyCode === 27){
             unselectNodes();
         }
-    });
+    })
 }
