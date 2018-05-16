@@ -7,6 +7,7 @@ function showMessage(msg) {
 // get node information by id
 function getNodeInfoById(id) {
     let node = game.allnode[id];
+    if(!node) return '';
     let inf  = '';
     inf += `ID： ${id}<br>`;
     inf += `地形： ${getTerrainById(node.id, 'ZH')}<br>`;
