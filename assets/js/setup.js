@@ -79,10 +79,10 @@ function setupPlayers(players){
             if(players[i].location !== j) continue;
             PImg = {
                 'id'          : players[i].playerName,
-                'x'           : nodePosition[players[i].location].x * 100 + 10,
+                'x'           : nodePosition[players[i].location].x * 100,
                 'y'           : nodePosition[players[i].location].y * 100 - 10,
                 'image'       : undefined,
-                'shape'       : 'circularImage',
+                'shape'       : 'image',
                 'group'       : 'player',
                 'level'       : 1
             };
@@ -100,7 +100,7 @@ function setupPlayers(players){
         'id'              : graphPlayers[i].id + "label",
         'label'           : graphPlayers[i].id,
         'x'               : graphPlayers[i].x,
-        'y'               : graphPlayers[i].y - 60,
+        'y'               : graphPlayers[i].y - 70,
         'shape'           : 'box',
         'color'           : '#333631',
         'level'           : 10,
