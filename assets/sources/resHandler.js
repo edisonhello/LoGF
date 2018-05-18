@@ -41,7 +41,6 @@ var resHandler = {
           if(gNodes[i].id === loc){ locCor.x = gNodes[i].x, locCor.y = gNodes[i].y; }
           if(gNodes[i].id === des){ desCor.x = gNodes[i].x, desCor.y = gNodes[i].y; }
         }
-        console.log(locCor, desCor);
         let count = 0, dx = (desCor.x - locCor.x) / 50, dy = (desCor.y - locCor.y) / 50;
         var SIIdmove = setInterval(function(){
           network.moveNode(id, locCor.x + count * dx, locCor.y + count * dy);
