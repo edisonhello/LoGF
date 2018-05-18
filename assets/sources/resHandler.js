@@ -31,8 +31,27 @@ var resHandler = {
             showMessage(`${game.players[game.turn].playerName} 停留在 ${data.destination}`);
         }
         else showMessage(`玩家 ${data.player} 移動至 ${data.destination}`);
-        game = data.game;
         network.selectNodes([data.destination]);
+        
+        // move animation
+        let id = game.players[game.turn].playerName, il = id + "label";
+        let loc = game.players[game.turn].location, des = data.destination;
+        let locCor = {}, desCor = {}, gNodes = graphData.nodes._data;
+        for(let i in gNodes){
+          if(gNodes[i].id === loc){ locCor.x = gNodes[i].x, locCor.y = gNodes[i].y; }
+          if(gNodes[i].id === des){ desCor.x = gNodes[i].x, desCor.y = gNodes[i].y; }
+        }
+        console.log(locCor, desCor);
+        let count = 0, dx = (desCor.x - locCor.x) / 50, dy = (desCor.y - locCor.y) / 50;
+        var SIIdmove = setInterval(function(){
+          network.moveNode(id, locCor.x + count * dx, locCor.y + count * dy);
+          network.moveNode(il, locCor.x + count * dx, locCor.y + count * dy - 70);
+          count++;
+          if(count === 50){ clearInterval(SIIdmove); }
+        }, 10);
+        unselectNodes();
+        
+        game = data.game;
         changeButton();
     },
     'skip': function(data) {
