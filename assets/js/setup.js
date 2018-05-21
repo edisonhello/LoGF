@@ -5,7 +5,7 @@ const nodeData      = require('../node_data.json');
 const nodePosition  = require('../node_position.json');
 const nodeImg       = require('../node_img.json');
 const Player        = require('./player.js');
-const PlayersImg    = require('../players_img.json');
+const playersImg    = require('../players_img.json');
 const initLocation  = ['p04', 'p07', 'p17', 'p21'];
 
 function setupNodes(playerName) {
@@ -74,45 +74,35 @@ function getPlayer(playerName) {
 function setupPlayers(players){
     let graphPlayers = [];
     for(let i in players){
-        let PImg = {};
-        for(let j in nodePosition){
-            if(players[i].location !== j) continue;
-            PImg = {
-                'id'          : players[i].playerName,
-                'x'           : nodePosition[players[i].location].x * 100,
-                'y'           : nodePosition[players[i].location].y * 100 - 10,
-                'image'       : undefined,
-                'shape'       : 'image',
-                'group'       : 'player',
-                'level'       : 1
-            };
-        }
-        graphPlayers.push(PImg);
-    }
-    for(let j = 0;j < 4;j++){
-        if(graphPlayers[j] == null) break;
-        if(graphPlayers[j].image == undefined){
-            graphPlayers[j].image = PlayersImg[j];
-        }
+        let playerNode = {
+            'id'    : players[i].playerName,
+            'x'     : nodePosition[players[i].location].x * 100,
+            'y'     : nodePosition[players[i].location].y * 100 - 10,
+            'image' : playersImg[i],
+            'shape' : 'image',
+            'group' : 'player',
+            'level' : 1
+        };
+        graphPlayers.push(playerNode);
     }
     for(let i in graphPlayers){
-      let PLabel = {
-        'id'              : graphPlayers[i].id + "label",
-        'label'           : graphPlayers[i].id,
-        'x'               : graphPlayers[i].x,
-        'y'               : graphPlayers[i].y - 70,
-        'shape'           : 'box',
-        'color'           : '#333631',
-        'level'           : 10,
-        'shapeProperties' : { 'borderRadius' : 4 },
-        'group'           : 'playerLabel',
-        'font'            : {
-          'color'  : '#fff8dc',
-          'vadjust': 2,
-          'size'   : 28
-        }
-      };
-      graphPlayers.push(PLabel);
+        let playerLabel = {
+            'id'              : graphPlayers[i].id + 'label',
+            'label'           : graphPlayers[i].id,
+            'x'               : graphPlayers[i].x,
+            'y'               : graphPlayers[i].y - 70,
+            'shape'           : 'box',
+            'color'           : '#333631',
+            'level'           : 10,
+            'shapeProperties' : { 'borderRadius':4 },
+            'group'           : 'playerLabel',
+            'font'            : {
+                'color'   : '#fff8dc',
+                'vadjust' : 2,
+                'size'    : 28
+            }
+        };
+        graphPlayers.push(playerLabel);
     }
     return graphPlayers;
 }
@@ -123,7 +113,7 @@ function setup(playerName) {
     let players = getPlayer(playerName);
     let graphPlayers = setupPlayers(players);
     for(let i in graphPlayers){
-      graphNodes.push(graphPlayers[i]);
+        graphNodes.push(graphPlayers[i]);
     }
     return {
         'game': {

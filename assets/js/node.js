@@ -6,5 +6,5 @@ module.exports = function(id) {
     this.triggered = false;
     this.event     = undefined;
     this.building  = undefined;
-    this.players    = [];
+    this.players   = [];
 }
