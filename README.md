@@ -1,3 +1,5 @@
+A repository of new board game.
+
 # LoGF
 
 ```
